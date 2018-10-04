@@ -1,3 +1,22 @@
 // Place all the styles related to the StaticPages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+img {
+  height: 100px;
+  width: 100px;
+}
+
+main{
+  width: 70%;
+  margin: 0 auto;
+}
+
+h1 {
+
+}
+
+.pokemon-items {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
