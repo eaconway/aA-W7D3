@@ -1,6 +1,26 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 
-class PokemonDetail extends React.Component {
+const POKE_TYPES = [
+  'fire',
+  'electric',
+  'normal',
+  'ghost',
+  'psychic',
+  'water',
+  'bug',
+  'dragon',
+  'grass',
+  'fighting',
+  'ice',
+  'flying',
+  'poison',
+  'ground',
+  'rock',
+  'steel'
+];
+
+class PokemonForm extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -21,7 +41,9 @@ class PokemonDetail extends React.Component {
   handleSubmit(e){
     e.preventDefault();
     debugger
-    this.props.createSinglePokemon(this.state);
+    this.props.createSinglePokemon(this.state).then((newPokemon) => {
+      this.props.history.push(`pokemon/${newPokemon.id}`);
+    });
   }
 
   render(){
@@ -42,19 +64,10 @@ class PokemonDetail extends React.Component {
 
         <label>Poke Type:
           <select onChange={this.handleChange('pokeType')}>
-            <option value="">Select car:</option>
-            <option value="Fire">Fire</option>
-            <option value="2">BMW</option>
-            <option value="3">Citroen</option>
-            <option value="4">Ford</option>
-            <option value="5">Honda</option>
-            <option value="6">Jaguar</option>
-            <option value="7">Land Rover</option>
-            <option value="8">Mercedes</option>
-            <option value="9">Mini</option>
-            <option value="10">Nissan</option>
-            <option value="11">Toyota</option>
-            <option value="12">Volvo</option>
+            <option value="">Select poke type:</option>
+            {POKE_TYPES.map((type, i) => {
+              return <option value={type} key={i}>{type}</option>
+            })}
           </select>
         </label>
 
@@ -68,4 +81,4 @@ class PokemonDetail extends React.Component {
   }
 }
 
-export default PokemonDetail;
+export default withRouter(PokemonForm);

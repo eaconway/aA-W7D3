@@ -14,6 +14,10 @@ export default (state = {}, action) => {
       let pokemon = action.payload.pokemon;
       newState[pokemon.id] = pokemon;
       return newState;
+    // case RECEIVE_NEW_POKEMON:
+    //   let pokemon = action.payload.pokemon;
+    //   newState[pokemon.id] = pokemon;
+    //   return newState;
     default:
       return state;
   }

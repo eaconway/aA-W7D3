@@ -90,16 +90,17 @@
 /*!*********************************************!*\
   !*** ./frontend/actions/pokemon_actions.js ***!
   \*********************************************/
-/*! exports provided: RECEIVE_ALL_POKEMON, RECEIVE_SINGLE_POKEMON, CREATE_SINGLE_POKEMON, receiveAllPokemon, receiveSinglePokemon, requestAllPokemon, requestSinglePokemon, createSinglePokemon */
+/*! exports provided: RECEIVE_ALL_POKEMON, RECEIVE_SINGLE_POKEMON, RECEIVE_NEW_POKEMON, receiveAllPokemon, receiveSinglePokemon, receiveNewPokemon, requestAllPokemon, requestSinglePokemon, createSinglePokemon */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RECEIVE_ALL_POKEMON", function() { return RECEIVE_ALL_POKEMON; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RECEIVE_SINGLE_POKEMON", function() { return RECEIVE_SINGLE_POKEMON; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CREATE_SINGLE_POKEMON", function() { return CREATE_SINGLE_POKEMON; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RECEIVE_NEW_POKEMON", function() { return RECEIVE_NEW_POKEMON; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "receiveAllPokemon", function() { return receiveAllPokemon; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "receiveSinglePokemon", function() { return receiveSinglePokemon; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "receiveNewPokemon", function() { return receiveNewPokemon; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requestAllPokemon", function() { return requestAllPokemon; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requestSinglePokemon", function() { return requestSinglePokemon; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createSinglePokemon", function() { return createSinglePokemon; });
@@ -107,7 +108,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var RECEIVE_ALL_POKEMON = 'RECEIVE_ALL_POKEMON';
 var RECEIVE_SINGLE_POKEMON = 'RECEIVE_SINGLE_POKEMON';
-var CREATE_SINGLE_POKEMON = 'CREATE_SINGLE_POKEMON';
+var RECEIVE_NEW_POKEMON = 'RECEIVE_NEW_POKEMON';
 var receiveAllPokemon = function receiveAllPokemon(pokemon) {
   return {
     type: RECEIVE_ALL_POKEMON,
@@ -117,6 +118,12 @@ var receiveAllPokemon = function receiveAllPokemon(pokemon) {
 var receiveSinglePokemon = function receiveSinglePokemon(payload) {
   return {
     type: RECEIVE_SINGLE_POKEMON,
+    payload: payload
+  };
+};
+var receiveNewPokemon = function receiveNewPokemon(payload) {
+  return {
+    type: RECEIVE_NEW_POKEMON,
     payload: payload
   };
 };
@@ -137,7 +144,8 @@ var requestSinglePokemon = function requestSinglePokemon(id) {
 var createSinglePokemon = function createSinglePokemon(pokemon) {
   return function (dispatch) {
     return _util_api_util_js__WEBPACK_IMPORTED_MODULE_0__["createPokemon"](pokemon).then(function (newPokemon) {
-      return dispatch(receiveSinglePokemon(newPokemon));
+      dispatch(receiveSinglePokemon(newPokemon));
+      return pokemon;
     });
   };
 };
@@ -441,6 +449,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -463,17 +472,19 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
-var PokemonDetail =
+var POKE_TYPES = ['fire', 'electric', 'normal', 'ghost', 'psychic', 'water', 'bug', 'dragon', 'grass', 'fighting', 'ice', 'flying', 'poison', 'ground', 'rock', 'steel'];
+
+var PokemonForm =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(PokemonDetail, _React$Component);
+  _inherits(PokemonForm, _React$Component);
 
-  function PokemonDetail(props) {
+  function PokemonForm(props) {
     var _this;
 
-    _classCallCheck(this, PokemonDetail);
+    _classCallCheck(this, PokemonForm);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(PokemonDetail).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PokemonForm).call(this, props));
     _this.state = {
       attack: 0,
       defense: 0,
@@ -486,7 +497,7 @@ function (_React$Component) {
     return _this;
   }
 
-  _createClass(PokemonDetail, [{
+  _createClass(PokemonForm, [{
     key: "handleChange",
     value: function handleChange(key) {
       var _this2 = this;
@@ -498,9 +509,13 @@ function (_React$Component) {
   }, {
     key: "handleSubmit",
     value: function handleSubmit(e) {
+      var _this3 = this;
+
       e.preventDefault();
       debugger;
-      this.props.createSinglePokemon(this.state);
+      this.props.createSinglePokemon(this.state).then(function (newPokemon) {
+        _this3.props.history.push("pokemon/".concat(newPokemon.id));
+      });
     }
   }, {
     key: "render",
@@ -517,31 +532,12 @@ function (_React$Component) {
         onChange: this.handleChange('pokeType')
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
         value: ""
-      }, "Select car:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "Fire"
-      }, "Fire"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "2"
-      }, "BMW"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "3"
-      }, "Citroen"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "4"
-      }, "Ford"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "5"
-      }, "Honda"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "6"
-      }, "Jaguar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "7"
-      }, "Land Rover"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "8"
-      }, "Mercedes"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "9"
-      }, "Mini"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "10"
-      }, "Nissan"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "11"
-      }, "Toyota"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-        value: "12"
-      }, "Volvo"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Image Url:", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      }, "Select poke type:"), POKE_TYPES.map(function (type, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          value: type,
+          key: i
+        }, type);
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Image Url:", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         onChange: this.handleChange('imageUrl')
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleSubmit
@@ -549,10 +545,10 @@ function (_React$Component) {
     }
   }]);
 
-  return PokemonDetail;
+  return PokemonForm;
 }(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
 
-/* harmony default export */ __webpack_exports__["default"] = (PokemonDetail);
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["withRouter"])(PokemonForm));
 
 /***/ }),
 
@@ -963,6 +959,10 @@ __webpack_require__.r(__webpack_exports__);
       var pokemon = action.payload.pokemon;
       newState[pokemon.id] = pokemon;
       return newState;
+    // case RECEIVE_NEW_POKEMON:
+    //   let pokemon = action.payload.pokemon;
+    //   newState[pokemon.id] = pokemon;
+    //   return newState;
 
     default:
       return state;
